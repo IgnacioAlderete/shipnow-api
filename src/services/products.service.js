@@ -3,9 +3,9 @@ import { PRODUCT_STATUS } from "../constants/index.js";
 
 class ProductService {
 
-    async getAll() {
+    async getProducts() {
 
-        const products = await productRepository.getAll();
+        const products = await productRepository.getProducts();
 
         return products.filter(
             product =>
@@ -14,11 +14,11 @@ class ProductService {
         );
     }
 
-    async getById(id) {
+    async getProductById(id) {
         return await productRepository.getById(id);
     }
 
-    async create(data) {
+    async createProduct(data) {
 
         if (data.price < 0) {
             throw new Error("Precio inválido");
@@ -26,6 +26,26 @@ class ProductService {
 
         return await productRepository.create(data);
     }
+      async updateProduct(id, data) {
+        const product = await productRepository.update(id, data);
+
+        if (!product) {
+            throw new Error("Producto no encontrado");
+        }
+
+        return product;
+    }
+
+    async deleteProduct(id) {
+        const product = await productRepository.delete(id);
+
+        if (!product) {
+            throw new Error("Producto no encontrado");
+        }
+
+        return product;
+    }
+
 }
 
 export default new ProductService;

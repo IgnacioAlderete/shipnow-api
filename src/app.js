@@ -13,13 +13,14 @@ app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), secret: JWT_SECRET });
+  res.json({ status: 'ok', timestamp: new Date().toISOString()});
 });
+
+
+
 
 app.use((req, res) => {
   res.status(404).send('Ruta no encontrada');
 });
 
 export default app;
- //server.js --> se encarga inicilizar todas las partes del proyecto --> app - mongoose
- // app.js --> configuracion de app

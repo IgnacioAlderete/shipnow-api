@@ -1,156 +1,37 @@
 # ShipNow API
 
-API desarrollada con Node.js, Express y MongoDB, organizada mediante una arquitectura por capas para separar responsabilidades y facilitar el mantenimiento del proyecto.
+API REST de productos y usuarios con arquitectura por capas (Router → Controller → Service → Repository).
 
-## Tecnologías
+## Correr el proyecto localmente
 
-* Node.js
-* Express
-* MongoDB
-* Mongoose
-* JavaScript
-* dotenv
+1. Instalar dependencias: `npm install`
+2. Copiar `.env.example` a `.env` y completar los valores:
+   ```
+   PORT=8080
+   MONGODB_URI=mongodb://localhost:27017/shipnow
+   NODE_ENV=development
+   ```
+3. Iniciar: `npm start` (o `npm run dev`)
 
-## Arquitectura
+Si falta `PORT`, `MONGODB_URI` o `NODE_ENV` (o tienen un valor inválido), la app no arranca y muestra un error claro.
 
-El proyecto utiliza una arquitectura de tres capas:
+## Estructura
 
-```text
-Router
-   ↓
-Controller
-   ↓
-Service
-   ↓
-Repository
-   ↓
-MongoDB
+```
+src/
+├── config/        env.config.js  (único lugar donde se lee process.env)
+├── constants/     estados de producto, roles, HTTP status, entornos
+├── errors/        AppError (error con statusCode)
+├── models/        solo esquemas de Mongoose
+├── repositories/  único lugar con acceso a MongoDB
+├── services/      lógica de negocio
+├── controllers/   manejo de req/res y status codes
+└── routes/        mapeo ruta → controller
 ```
 
-### Router
+## ¿Por qué separar Service y Repository?
 
-Las rutas se encargan únicamente de conectar cada endpoint con el método correspondiente del Controller.
-
-### Controller
-
-Gestiona la petición HTTP (`req`) y la respuesta (`res`). También determina el `status code` correspondiente.
-
-### Service
-
-Contiene la lógica de negocio de la aplicación.
-
-Por ejemplo, antes de crear o devolver un producto se pueden aplicar reglas como validar datos, comprobar condiciones de stock o decidir qué productos deben mostrarse.
-
-### Repository
-
-Centraliza el acceso a MongoDB mediante Mongoose.
-
-Por ejemplo:
-
-```js
-async getAll() {
-    return await Product.find();
-}
-```
-
-La separación entre **Service y Repository** permite que cada capa tenga una responsabilidad específica. El Repository se ocupa de **cómo obtener o modificar los datos**, mientras que el Service se ocupa de **qué reglas deben cumplirse antes de realizar esas operaciones**.
-
-De esta manera, si en el futuro cambia la forma de almacenar los datos, el impacto queda principalmente aislado en la capa de acceso a datos.
-
-## Constantes
-
-Las constantes compartidas se encuentran centralizadas en:
-
-```text
-src/constants/index.js
-```
-
-Los estados de los productos y los roles de usuario se definen mediante objetos congelados con `Object.freeze()`.
-
-Ejemplo:
-
-```js
-export const USER_ROLES = Object.freeze({
-    ADMIN: "admin",
-    USER: "user"
-});
-```
-
-Esto evita utilizar strings repetidos directamente en diferentes partes de la aplicación.
-
-## Instalación
-
-Clonar el repositorio:
-
-```bash
-git clone URL_DEL_REPOSITORIO
-```
-
-Ingresar a la carpeta:
-
-```bash
-cd NOMBRE_DEL_PROYECTO
-```
-
-Instalar las dependencias:
-
-```bash
-npm install
-```
-
-Crear un archivo `.env` en la raíz del proyecto:
-
-```env
-PORT=8080
-MONGO_URI=tu_conexion_de_mongodb
-```
-
-Completar las variables de entorno con los valores correspondientes.
-
-## Ejecución
-
-Para iniciar el proyecto:
-
-```bash
-npm start
-```
-
-Si el proyecto utiliza Nodemon:
-
-```bash
-npm run dev
-```
-
-La API quedará disponible en:
-
-```text
-http://localhost:8080
-```
-
-## Endpoints principales
-
-### Products
-
-```text
-GET    /api/products
-GET    /api/products/:id
-POST   /api/products
-PUT    /api/products/:id
-DELETE /api/products/:id
-```
-
-### Users
-
-```text
-GET    /api/users
-GET    /api/users/:id
-POST   /api/users
-PUT    /api/users/:id
-DELETE /api/users/:id
-```
-
-## Variables de entorno
-
-Por seguridad, el archivo `.env` no debe subirse al repositorio.
-
-
+(Reescribilo con tus palabras. Ideas:)
+- El **Repository** aísla el acceso a datos: si cambia la base o la forma de consultar, solo se toca esa capa, y se puede mockear en tests.
+- El **Service** concentra las reglas de negocio (ej: listar solo productos disponibles con stock, derivar el estado según el stock, evitar emails duplicados, impedir crear admins). No sabe nada de HTTP ni de Mongoose.
+- El **Controller** queda liviano: traduce la request en una llamada al Service y el resultado (o error) en una respuesta HTTP.

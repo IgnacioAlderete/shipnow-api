@@ -1,13 +1,18 @@
+import mongoose from "mongoose";
 import Product from "../models/product.model.js";
 
 class ProductRepository {
-
     async getAll() {
         return await Product.find();
     }
 
     async getById(id) {
+        if (!mongoose.isValidObjectId(id)) return null;
         return await Product.findById(id);
+    }
+
+    async getByCode(code) {
+        return await Product.findOne({ code });
     }
 
     async create(productData) {
@@ -15,17 +20,14 @@ class ProductRepository {
     }
 
     async update(id, productData) {
-        return await Product.findByIdAndUpdate(
-            id,
-            productData,
-            { new: true }
-        );
+        if (!mongoose.isValidObjectId(id)) return null;
+        return await Product.findByIdAndUpdate(id, productData, { new: true, runValidators: true });
     }
 
     async delete(id) {
+        if (!mongoose.isValidObjectId(id)) return null;
         return await Product.findByIdAndDelete(id);
     }
 }
 
-export default ProductRepository
-
+export default new ProductRepository();

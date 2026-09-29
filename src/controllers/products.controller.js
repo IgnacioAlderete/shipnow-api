@@ -1,116 +1,43 @@
-import  productService  from "../services/products.service.js";
+import productService from "../services/products.service.js";
+import { HTTP_STATUS } from "../constants/index.js";
+import { sendSuccess, sendError } from "./handle-response.js";
 
 export const getProducts = async (req, res) => {
-
     try {
-
-        const products = await productService.getAll();
-
-        res.status(200).json({
-            status: "success",
-            payload: products
-        });
-
+        sendSuccess(res, await productService.getProducts());
     } catch (error) {
-
-        res.status(500).json({
-            status: "error",
-            message: error.message
-        });
-
+        sendError(res, error);
     }
 };
-
 
 export const getProductById = async (req, res) => {
-
     try {
-
-        const { id } = req.params;
-
-        const product = await productService.getProductById(id);
-
-        res.status(200).json({
-            status: "success",
-            payload: product
-        });
-
+        sendSuccess(res, await productService.getProductById(req.params.id));
     } catch (error) {
-
-        res.status(404).json({
-            status: "error",
-            message: error.message
-        });
-
+        sendError(res, error);
     }
 };
-
 
 export const createProduct = async (req, res) => {
-
     try {
-
-        const product = await productService.createProduct(req.body);
-
-        res.status(201).json({
-            status: "success",
-            payload: product
-        });
-
+        sendSuccess(res, await productService.createProduct(req.body), HTTP_STATUS.CREATED);
     } catch (error) {
-
-        res.status(400).json({
-            status: "error",
-            message: error.message
-        });
-
+        sendError(res, error);
     }
 };
-
 
 export const updateProduct = async (req, res) => {
-
     try {
-
-        const { id } = req.params;
-
-        const product = await productService.updateProduct(id, req.body);
-
-        res.status(200).json({
-            status: "success",
-            payload: product
-        });
-
+        sendSuccess(res, await productService.updateProduct(req.params.id, req.body));
     } catch (error) {
-
-        res.status(404).json({
-            status: "error",
-            message: error.message
-        });
-
+        sendError(res, error);
     }
 };
 
-
 export const deleteProduct = async (req, res) => {
-
     try {
-
-        const { id } = req.params;
-
-        const product = await productService.deleteProduct(id);
-
-        res.status(200).json({
-            status: "success",
-            payload: product
-        });
-
+        sendSuccess(res, await productService.deleteProduct(req.params.id));
     } catch (error) {
-
-        res.status(404).json({
-            status: "error",
-            message: error.message
-        });
-
+        sendError(res, error);
     }
 };
