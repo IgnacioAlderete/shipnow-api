@@ -2,8 +2,12 @@ import mongoose from "mongoose";
 import Product from "../models/product.model.js";
 
 class ProductRepository {
-    async getAll() {
-        return await Product.find();
+    async getAll({ status, category, inStock } = {}) {
+        const query = {};
+        if (status) query.status = status;
+        if (category) query.category = category;
+        if (inStock) query.stock = { $gt: 0 };
+        return await Product.find(query);
     }
 
     async getById(id) {

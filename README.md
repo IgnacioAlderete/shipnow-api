@@ -26,12 +26,12 @@ src/
 ├── repositories/  único lugar con acceso a MongoDB
 ├── services/      lógica de negocio
 ├── controllers/   manejo de req/res y status codes
-└── routes/        mapeo ruta → controller
+└── routes/        cada ruta apunta a un método del controller
 ```
 
 ## ¿Por qué separar Service y Repository?
 
-(Reescribilo con tus palabras. Ideas:)
-- El **Repository** aísla el acceso a datos: si cambia la base o la forma de consultar, solo se toca esa capa, y se puede mockear en tests.
-- El **Service** concentra las reglas de negocio (ej: listar solo productos disponibles con stock, derivar el estado según el stock, evitar emails duplicados, impedir crear admins). No sabe nada de HTTP ni de Mongoose.
-- El **Controller** queda liviano: traduce la request en una llamada al Service y el resultado (o error) en una respuesta HTTP.
+
+Separé el acceso a datos de las reglas de negocio porque cambian por motivos distintos. El Repository solo sabe cómo guardar y buscar en MongoDB (`find`, `findById`, `create`...), así que si mañana cambia la base o una consulta, toco un solo archivo. El Service decide qué está permitido: por ejemplo, que el estado de un producto dependa de su stock, que no se repita un email o que no se pueda crear un admin desde el endpoint público. Como no sabe nada de Express ni de Mongoose, esas reglas se pueden reutilizar desde otro lugar y probar sin levantar servidor ni base de datos.
+
+Un caso concreto: `GET /api/products` no filtra nada por su cuenta. El Controller pasa los parámetros de la URL al Service, el Service los valida y el Repository arma la consulta. Así cada capa hace una sola cosa.

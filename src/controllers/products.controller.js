@@ -4,7 +4,7 @@ import { sendSuccess, sendError } from "./handle-response.js";
 
 export const getProducts = async (req, res) => {
     try {
-        sendSuccess(res, await productService.getProducts());
+        sendSuccess(res, await productService.getProducts(req.query));
     } catch (error) {
         sendError(res, error);
     }

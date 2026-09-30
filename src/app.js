@@ -2,8 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import usersRouter from './routes/users.router.js';
 import productsRouter from './routes/products.router.js';
+//import apiRouter from './routes/index.js';
+
 
 const app = express();
+//app.use('/api', apiRouter);
 
 app.use(cors());
 app.use(express.json());

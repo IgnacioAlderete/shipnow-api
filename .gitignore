@@ -1,3 +1,22 @@
 node_modules
 env
+mocks
+src/models/deliveries.model.js
+src/models/order.model.js
+src/models/delivery.model.js
 
+src/repositories/deliveries.repository.js
+src/services/deliveries.service.js
+src/controllers/deliveries.controller.js
+src/controllers/orders.controller.js
+src/controllers/mock.controller.js
+
+src/routes/deliveries.router.js
+src/routes/orders.router.js
+src/routes/mocks.router.js
+src/routes/index.js
+
+src/repositories/orders.repository.js
+src/services/orders.service.js
+src/services/deliveries.service.js
+src/services/mocks.service.js
