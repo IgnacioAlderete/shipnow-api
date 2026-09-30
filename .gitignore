@@ -1,5 +1,5 @@
 node_modules
-env
+.env
 mocks
 src/models/deliveries.model.js
 src/models/order.model.js
